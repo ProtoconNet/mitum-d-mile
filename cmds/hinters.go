@@ -21,13 +21,15 @@ var AddedHinters = []encoder.DecodeDetail{
 
 	{Hint: dmile.CreateDataHint, Instance: dmile.CreateData{}},
 	{Hint: dmile.RegisterModelHint, Instance: dmile.RegisterModel{}},
-
+	{Hint: dmile.MigrateDataHint, Instance: dmile.MigrateData{}},
+	{Hint: dmile.MigrateDataItemHint, Instance: dmile.MigrateDataItem{}},
 	{Hint: state.DataStateValueHint, Instance: state.DataStateValue{}},
 	{Hint: state.DesignStateValueHint, Instance: state.DesignStateValue{}},
 }
 
 var AddedSupportedHinters = []encoder.DecodeDetail{
 	{Hint: dmile.CreateDataFactHint, Instance: dmile.CreateDataFact{}},
+	{Hint: dmile.MigrateDataFactHint, Instance: dmile.MigrateDataFact{}},
 	{Hint: dmile.RegisterModelFactHint, Instance: dmile.RegisterModelFact{}},
 }
 

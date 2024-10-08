@@ -52,6 +52,11 @@ func POperationProcessorsMap(pctx context.Context) (context.Context, error) {
 		dmile.NewCreateDataProcessor(),
 	); err != nil {
 		return pctx, err
+	} else if err := opr.SetProcessor(
+		dmile.MigrateDataHint,
+		dmile.NewMigrateDataProcessor(),
+	); err != nil {
+		return pctx, err
 	}
 
 	_ = set.Add(dmile.CreateDataHint, func(height base.Height, getStatef base.GetStateFunc) (base.OperationProcessor, error) {
@@ -64,6 +69,15 @@ func POperationProcessorsMap(pctx context.Context) (context.Context, error) {
 	})
 
 	_ = set.Add(dmile.RegisterModelHint, func(height base.Height, getStatef base.GetStateFunc) (base.OperationProcessor, error) {
+		return opr.New(
+			height,
+			getStatef,
+			nil,
+			nil,
+		)
+	})
+
+	_ = set.Add(dmile.MigrateDataHint, func(height base.Height, getStatef base.GetStateFunc) (base.OperationProcessor, error) {
 		return opr.New(
 			height,
 			getStatef,
