@@ -127,7 +127,7 @@ func (opp *CreateDataProcessor) PreProcess(
 	if found, _ := state.CheckNotExistsState(dmilestate.DataStateKey(fact.Contract(), fact.MerkleRoot()), getStateFunc); found {
 		return nil, mitumbase.NewBaseOperationProcessReasonError(
 			common.ErrMPreProcess.
-				Wrap(common.ErrMStateE).Errorf("d mileage data for pub key %q in contract account %v",
+				Wrap(common.ErrMStateE).Errorf("d mileage data for merkleRoot %q in contract account %v",
 				fact.MerkleRoot(), fact.Contract(),
 			)), nil
 	}

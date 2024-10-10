@@ -79,7 +79,7 @@ func (ipp *MigrateDataItemProcessor) PreProcess(
 	if found, _ := currencystate.CheckNotExistsState(state.DataStateKey(it.Contract(), it.MerkleRoot()), getStateFunc); found {
 		return e.Wrap(
 			common.ErrStateE.Errorf(
-				"pubKey %v in contract account %v",
+				"merkleRoot %v in contract account %v",
 				it.MerkleRoot(), it.Contract()),
 		)
 	}

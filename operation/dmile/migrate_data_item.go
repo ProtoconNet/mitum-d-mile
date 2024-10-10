@@ -6,6 +6,7 @@ import (
 	"github.com/ProtoconNet/mitum2/base"
 	"github.com/ProtoconNet/mitum2/util"
 	"github.com/ProtoconNet/mitum2/util/hint"
+	"github.com/pkg/errors"
 )
 
 var MigrateDataItemHint = hint.MustNewHint("mitum-d-mile-migrate-data-item-v0.0.1")
@@ -48,6 +49,10 @@ func (it MigrateDataItem) IsValid([]byte) error {
 		it.contract,
 	); err != nil {
 		return common.ErrItemInvalid.Wrap(err)
+	}
+
+	if !crcytypes.ReValidSpcecialCh.Match([]byte(it.merkleRoot)) {
+		return common.ErrValueInvalid.Wrap(errors.Errorf("merkleRoot %v, must match regex `^[^\\s:/?#\\[\\]$@]*$`", it.merkleRoot))
 	}
 
 	return nil

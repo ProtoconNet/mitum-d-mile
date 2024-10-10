@@ -45,6 +45,10 @@ func (fact CreateDataFact) IsValid(b []byte) error {
 			common.ErrSelfTarget.Wrap(errors.Errorf("sender %v is same with contract account", fact.sender)))
 	}
 
+	if !currencytypes.ReValidSpcecialCh.Match([]byte(fact.merkleRoot)) {
+		return common.ErrValueInvalid.Wrap(errors.Errorf("merkleRoot %v, must match regex `^[^\\s:/?#\\[\\]$@]*$`", fact.merkleRoot))
+	}
+
 	if err := util.CheckIsValiders(nil, false,
 		fact.BaseHinter,
 		fact.sender,
