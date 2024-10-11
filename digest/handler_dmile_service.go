@@ -1,11 +1,11 @@
 package digest
 
 import (
-	"fmt"
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-d-mile/types"
 	"github.com/ProtoconNet/mitum2/base"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -88,7 +88,8 @@ func (hd *Handlers) handleDmileDataByTxID(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	key, err, status := currencydigest.ParseRequest(w, r, "tx_hash")
+	txHash, err, status := currencydigest.ParseRequest(w, r, "tx_hash")
+	key := strings.TrimPrefix(txHash, "0x")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -180,7 +181,6 @@ func (hd *Handlers) handleDmileDataByMerkleRoot(w http.ResponseWriter, r *http.R
 }
 
 func (hd *Handlers) handleDmileDataByMerkleRootInGroup(contract, key string) ([]byte, error) {
-	fmt.Println(key)
 	data, st, err := DmileDataByMerkleRoot(hd.database, contract, key)
 	if err != nil {
 		return nil, err

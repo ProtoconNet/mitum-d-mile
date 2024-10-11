@@ -2,6 +2,7 @@ package dmile
 
 import (
 	"context"
+	"strings"
 	"sync"
 
 	extensioncurrency "github.com/ProtoconNet/mitum-currency/v3/state/extension"
@@ -94,8 +95,9 @@ func (ipp *MigrateDataItemProcessor) Process(
 
 	var sts []base.StateMergeValue
 
+	txHash := strings.TrimPrefix(it.TxID(), "0x")
 	data := types.NewData(
-		it.MerkleRoot(), it.TxID(),
+		it.MerkleRoot(), txHash,
 	)
 	if err := data.IsValid(nil); err != nil {
 		return nil, err
