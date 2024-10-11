@@ -10,16 +10,16 @@ import (
 
 func (d Data) MarshalBSON() ([]byte, error) {
 	return bsonenc.Marshal(bson.M{
-		"_hint":      d.Hint().String(),
-		"merkleRoot": d.merkleRoot,
-		"txid":       d.txID,
+		"_hint":       d.Hint().String(),
+		"merkle_root": d.merkleRoot,
+		"tx_hash":     d.txID,
 	})
 }
 
 type DataBSONUnmarshaler struct {
 	Hint       string `bson:"_hint"`
-	MerkleRoot string `bson:"merkleRoot"`
-	TxID       string `bson:"txid"`
+	MerkleRoot string `bson:"merkle_root"`
+	TxID       string `bson:"tx_hash"`
 }
 
 func (d *Data) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {

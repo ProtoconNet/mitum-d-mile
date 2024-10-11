@@ -8,8 +8,8 @@ import (
 
 type DataJSONMarshaler struct {
 	hint.BaseHinter
-	MerkleRoot string `json:"merkleRoot"`
-	TxID       string `json:"txid"`
+	MerkleRoot string `json:"merkle_root"`
+	TxID       string `json:"tx_hash"`
 }
 
 func (d Data) MarshalJSON() ([]byte, error) {
@@ -22,8 +22,8 @@ func (d Data) MarshalJSON() ([]byte, error) {
 
 type DataJSONUnmarshaler struct {
 	Hint       hint.Hint `json:"_hint"`
-	MerkleRoot string    `json:"merkleRoot"`
-	TxID       string    `json:"txid"`
+	MerkleRoot string    `json:"merkle_root"`
+	TxID       string    `json:"tx_hash"`
 }
 
 func (d *Data) DecodeJSON(b []byte, enc encoder.Encoder) error {

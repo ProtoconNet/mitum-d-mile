@@ -86,8 +86,8 @@ func (doc DmileDataDoc) MarshalBSON() ([]byte, error) {
 	}
 
 	m["contract"] = parsedKey[1]
-	m["merkleRoot"] = doc.data.MerkleRoot()
-	m["txID"] = doc.data.TxID()
+	m["merkle_root"] = doc.data.MerkleRoot()
+	m["tx_hash"] = doc.data.TxID()
 	m["height"] = doc.st.Height()
 
 	return bsonutil.Marshal(m)

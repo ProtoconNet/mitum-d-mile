@@ -1,6 +1,7 @@
 package digest
 
 import (
+	"fmt"
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-d-mile/types"
 	"github.com/ProtoconNet/mitum2/base"
@@ -87,7 +88,7 @@ func (hd *Handlers) handleDmileDataByTxID(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	key, err, status := currencydigest.ParseRequest(w, r, "txid")
+	key, err, status := currencydigest.ParseRequest(w, r, "tx_hash")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -123,7 +124,7 @@ func (hd *Handlers) buildDmileDataByTxIDHal(
 	contract string, data types.Data, st base.State) (currencydigest.Hal, error) {
 	h, err := hd.combineURL(
 		HandlerPathDmileDataByTxID,
-		"contract", contract, "txid", data.MerkleRoot())
+		"contract", contract, "tx_hash", data.TxID())
 	if err != nil {
 		return nil, err
 	}
@@ -159,14 +160,14 @@ func (hd *Handlers) handleDmileDataByMerkleRoot(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	key, err, status := currencydigest.ParseRequest(w, r, "merkleroot")
+	key, err, status := currencydigest.ParseRequest(w, r, "merkle_root")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
 	if v, err, shared := hd.rg.Do(cacheKey, func() (interface{}, error) {
-		return hd.handleDmileTxIDInGroup(contract, key)
+		return hd.handleDmileDataByMerkleRootInGroup(contract, key)
 	}); err != nil {
 		currencydigest.HTTP2HandleError(w, err)
 	} else {
@@ -178,7 +179,8 @@ func (hd *Handlers) handleDmileDataByMerkleRoot(w http.ResponseWriter, r *http.R
 	}
 }
 
-func (hd *Handlers) handleDmileTxIDInGroup(contract, key string) ([]byte, error) {
+func (hd *Handlers) handleDmileDataByMerkleRootInGroup(contract, key string) ([]byte, error) {
+	fmt.Println(key)
 	data, st, err := DmileDataByMerkleRoot(hd.database, contract, key)
 	if err != nil {
 		return nil, err
@@ -195,7 +197,7 @@ func (hd *Handlers) buildDmileDataByMerkleRootHal(
 	contract string, data types.Data, st base.State) (currencydigest.Hal, error) {
 	h, err := hd.combineURL(
 		HandlerPathDmileDataByMerkleRoot,
-		"contract", contract, "merkleroot", data.MerkleRoot())
+		"contract", contract, "merkle_root", data.MerkleRoot())
 	if err != nil {
 		return nil, err
 	}

@@ -10,11 +10,11 @@ import (
 func (it MigrateDataItem) MarshalBSON() ([]byte, error) {
 	return bsonenc.Marshal(
 		bson.M{
-			"_hint":      it.Hint().String(),
-			"contract":   it.contract,
-			"merkleRoot": it.merkleRoot,
-			"txid":       it.txID,
-			"currency":   it.currency,
+			"_hint":       it.Hint().String(),
+			"contract":    it.contract,
+			"merkle_root": it.merkleRoot,
+			"tx_hash":     it.txID,
+			"currency":    it.currency,
 		},
 	)
 }
@@ -22,8 +22,8 @@ func (it MigrateDataItem) MarshalBSON() ([]byte, error) {
 type MigrateDataItemBSONUnmarshaler struct {
 	Hint       string `bson:"_hint"`
 	Contract   string `bson:"contract"`
-	MerkleRoot string `bson:"merkleRoot"`
-	TxID       string `bson:"txid"`
+	MerkleRoot string `bson:"merkle_root"`
+	TxID       string `bson:"tx_hash"`
 	Currency   string `bson:"currency"`
 }
 

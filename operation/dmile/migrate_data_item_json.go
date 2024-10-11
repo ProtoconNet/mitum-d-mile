@@ -12,8 +12,8 @@ import (
 type MigrateDataItemJSONMarshaler struct {
 	hint.BaseHinter
 	Contract   base.Address             `json:"contract"`
-	MerkleRoot string                   `json:"merkleRoot"`
-	TxID       string                   `json:"txid"`
+	MerkleRoot string                   `json:"merkle_root"`
+	TxID       string                   `json:"tx_hash"`
 	Currency   currencytypes.CurrencyID `json:"currency"`
 }
 
@@ -30,8 +30,8 @@ func (it MigrateDataItem) MarshalJSON() ([]byte, error) {
 type MigrateDataItemJSONUnMarshaler struct {
 	Hint       hint.Hint `json:"_hint"`
 	Contract   string    `json:"contract"`
-	MerkleRoot string    `json:"merkleRoot"`
-	TxID       string    `json:"txid"`
+	MerkleRoot string    `json:"merkle_root"`
+	TxID       string    `json:"tx_hash"`
 	Currency   string    `json:"currency"`
 }
 

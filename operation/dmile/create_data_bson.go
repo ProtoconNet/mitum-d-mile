@@ -12,13 +12,13 @@ import (
 func (fact CreateDataFact) MarshalBSON() ([]byte, error) {
 	return bsonenc.Marshal(
 		bson.M{
-			"_hint":      fact.Hint().String(),
-			"hash":       fact.BaseFact.Hash().String(),
-			"token":      fact.BaseFact.Token(),
-			"sender":     fact.sender,
-			"contract":   fact.contract,
-			"merkleRoot": fact.merkleRoot,
-			"currency":   fact.currency,
+			"_hint":       fact.Hint().String(),
+			"hash":        fact.BaseFact.Hash().String(),
+			"token":       fact.BaseFact.Token(),
+			"sender":      fact.sender,
+			"contract":    fact.contract,
+			"merkle_root": fact.merkleRoot,
+			"currency":    fact.currency,
 		},
 	)
 }
@@ -27,7 +27,7 @@ type CreateDataFactBSONUnmarshaler struct {
 	Hint       string `bson:"_hint"`
 	Sender     string `bson:"sender"`
 	Contract   string `bson:"contract"`
-	MerkleRoot string `bson:"merkleRoot"`
+	MerkleRoot string `bson:"merkle_root"`
 	Currency   string `bson:"currency"`
 }
 

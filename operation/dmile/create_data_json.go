@@ -12,7 +12,7 @@ type CreateDataFactJSONMarshaler struct {
 	mitumbase.BaseFactJSONMarshaler
 	Sender     mitumbase.Address `json:"sender"`
 	Contract   mitumbase.Address `json:"contract"`
-	MerkleRoot string            `json:"merkleRoot"`
+	MerkleRoot string            `json:"merkle_root"`
 	Currency   types.CurrencyID  `json:"currency"`
 }
 
@@ -30,7 +30,7 @@ type CreateDataFactJSONUnmarshaler struct {
 	mitumbase.BaseFactJSONUnmarshaler
 	Sender     string `json:"sender"`
 	Contract   string `json:"contract"`
-	MerkleRoot string `json:"merkleRoot"`
+	MerkleRoot string `json:"merkle_root"`
 	Currency   string `json:"currency"`
 }
 

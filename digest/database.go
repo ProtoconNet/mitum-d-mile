@@ -62,7 +62,7 @@ func DmileDesign(st *cdigest.Database, contract string) (types.Design, base.Stat
 
 func DmileDataByTxID(db *cdigest.Database, contract, key string) (*types.Data, base.State, error) {
 	filter := utilc.NewBSONFilter("contract", contract)
-	filter = filter.Add("txID", key)
+	filter = filter.Add("tx_hash", key)
 	q := filter.D()
 
 	opt := options.FindOne().SetSort(
@@ -89,7 +89,7 @@ func DmileDataByTxID(db *cdigest.Database, contract, key string) (*types.Data, b
 		opt,
 	); err != nil {
 		return nil, nil, utilm.ErrNotFound.WithMessage(
-			err, "Dmile data for txID %s in contract account %s", key, contract)
+			err, "Dmile data for txHash %s in contract account %s", key, contract)
 	}
 
 	if data != nil {
@@ -101,7 +101,7 @@ func DmileDataByTxID(db *cdigest.Database, contract, key string) (*types.Data, b
 
 func DmileDataByMerkleRoot(db *cdigest.Database, contract, key string) (*types.Data, base.State, error) {
 	filter := utilc.NewBSONFilter("contract", contract)
-	filter = filter.Add("merkleRoot", key)
+	filter = filter.Add("merkle_root", key)
 	q := filter.D()
 
 	opt := options.FindOne().SetSort(

@@ -24,8 +24,8 @@ import (
 
 var (
 	HandlerPathDmileDesign           = `/dmile/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathDmileDataByTxID       = `/dmile/{contract:(?i)` + types.REStringAddressString + `}/txid/{txid:` + types.ReSpecialCh + `}`
-	HandlerPathDmileDataByMerkleRoot = `/dmile/{contract:(?i)` + types.REStringAddressString + `}/merkleroot/{merkleroot:` + types.ReSpecialCh + `}`
+	HandlerPathDmileDataByTxID       = `/dmile/{contract:(?i)` + types.REStringAddressString + `}/txhash/{tx_hash:` + types.ReSpecialCh + `}`
+	HandlerPathDmileDataByMerkleRoot = `/dmile/{contract:(?i)` + types.REStringAddressString + `}/merkleroot/{merkle_root:` + types.ReSpecialCh + `}`
 )
 
 func init() {
