@@ -10,6 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var LenMerkleRoot = 64
+
 var (
 	CreateDataFactHint = hint.MustNewHint("mitum-d-mile-create-data-operation-fact-v0.0.1")
 	CreateDataHint     = hint.MustNewHint("mitum-d-mile-create-data-operation-v0.0.1")
@@ -47,6 +49,10 @@ func (fact CreateDataFact) IsValid(b []byte) error {
 
 	if !currencytypes.ReValidSpcecialCh.Match([]byte(fact.merkleRoot)) {
 		return common.ErrValueInvalid.Wrap(errors.Errorf("merkleRoot %v, must match regex `^[^\\s:/?#\\[\\]$@]*$`", fact.merkleRoot))
+	}
+
+	if len(fact.merkleRoot) != 64 {
+		return common.ErrValOOR.Wrap(errors.Errorf("merkleRoot length must be %d but %d", LenMerkleRoot, len(fact.merkleRoot)))
 	}
 
 	if err := util.CheckIsValiders(nil, false,

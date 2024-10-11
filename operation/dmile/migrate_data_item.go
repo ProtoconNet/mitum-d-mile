@@ -55,6 +55,10 @@ func (it MigrateDataItem) IsValid([]byte) error {
 		return common.ErrValueInvalid.Wrap(errors.Errorf("merkleRoot %v, must match regex `^[^\\s:/?#\\[\\]$@]*$`", it.merkleRoot))
 	}
 
+	if len(it.merkleRoot) != 64 {
+		return common.ErrValOOR.Wrap(errors.Errorf("merkleRoot length must be %d but %d", LenMerkleRoot, len(it.merkleRoot)))
+	}
+
 	return nil
 }
 
