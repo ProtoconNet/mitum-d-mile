@@ -147,7 +147,7 @@ func (opp *RegisterModelProcessor) Process(
 
 	design := types.NewDesign(fact.Project())
 	if err := design.IsValid(nil); err != nil {
-		return nil, mitumbase.NewBaseOperationProcessReasonError("invalid dmile design, %q; %w", fact.Contract(), err), nil
+		return nil, mitumbase.NewBaseOperationProcessReasonError("invalid dmile design, %v; %w", fact.Contract(), err), nil
 	}
 
 	sts = append(sts, state.NewStateMergeValue(
@@ -157,12 +157,12 @@ func (opp *RegisterModelProcessor) Process(
 
 	st, err := state.ExistsState(stateextension.StateKeyContractAccount(fact.Contract()), "contract account", getStateFunc)
 	if err != nil {
-		return nil, mitumbase.NewBaseOperationProcessReasonError("contract account not found, %q; %w", fact.Contract(), err), nil
+		return nil, mitumbase.NewBaseOperationProcessReasonError("contract account not found, %v; %w", fact.Contract(), err), nil
 	}
 
 	ca, err := stateextension.StateContractAccountValue(st)
 	if err != nil {
-		return nil, mitumbase.NewBaseOperationProcessReasonError("failed to get state value of contract account, %q; %w", fact.Contract(), err), nil
+		return nil, mitumbase.NewBaseOperationProcessReasonError("failed to get state value of contract account, %v; %w", fact.Contract(), err), nil
 	}
 	nca := ca.SetIsActive(true)
 

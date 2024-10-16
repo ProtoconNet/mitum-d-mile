@@ -131,7 +131,9 @@ func (hd *Handlers) buildDmileDataByTxIDHal(
 	}
 
 	var hal currencydigest.Hal
-	hal = currencydigest.NewBaseHal(data, currencydigest.NewHalLink(h, nil))
+	nTxID := "0x" + data.TxID()
+	nData := types.NewData(data.MerkleRoot(), nTxID)
+	hal = currencydigest.NewBaseHal(nData, currencydigest.NewHalLink(h, nil))
 	h, err = hd.combineURL(currencydigest.HandlerPathBlockByHeight, "height", st.Height().String())
 	if err != nil {
 		return nil, err
@@ -203,7 +205,9 @@ func (hd *Handlers) buildDmileDataByMerkleRootHal(
 	}
 
 	var hal currencydigest.Hal
-	hal = currencydigest.NewBaseHal(data, currencydigest.NewHalLink(h, nil))
+	nTxID := "0x" + data.TxID()
+	nData := types.NewData(data.MerkleRoot(), nTxID)
+	hal = currencydigest.NewBaseHal(nData, currencydigest.NewHalLink(h, nil))
 	h, err = hd.combineURL(currencydigest.HandlerPathBlockByHeight, "height", st.Height().String())
 	if err != nil {
 		return nil, err
