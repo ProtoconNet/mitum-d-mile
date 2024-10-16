@@ -79,8 +79,9 @@ func DesignStateKey(addr mitumbase.Address) string {
 }
 
 var (
-	DataStateValueHint = hint.MustNewHint("mitum-d-mile-data-state-value-v0.0.1")
-	DataStateKeySuffix = "data"
+	DataStateValueHint     = hint.MustNewHint("mitum-d-mile-data-state-value-v0.0.1")
+	DataStateKeySuffix     = "data"
+	DataStateTxIDKeySuffix = "txid"
 )
 
 type DataStateValue struct {
@@ -135,6 +136,10 @@ func IsDataStateKey(key string) bool {
 	return strings.HasPrefix(key, DmileStateKeyPrefix) && strings.HasSuffix(key, DataStateKeySuffix)
 }
 
-func DataStateKey(addr mitumbase.Address, key string) string {
+func DataStateMerkleRootKey(addr mitumbase.Address, key string) string {
 	return fmt.Sprintf("%s:%s:%s", DmileStateKey(addr), key, DataStateKeySuffix)
+}
+
+func DataStateTxIDKey(addr mitumbase.Address, key string) string {
+	return fmt.Sprintf("%s:%s:%s", DmileStateKey(addr), key, DataStateTxIDKeySuffix)
 }

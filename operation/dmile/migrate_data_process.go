@@ -77,11 +77,19 @@ func (ipp *MigrateDataItemProcessor) PreProcess(
 			common.ErrServiceNF.Errorf("service design value for contract account %v", it.Contract()))
 	}
 
-	if found, _ := currencystate.CheckNotExistsState(state.DataStateKey(it.Contract(), it.MerkleRoot()), getStateFunc); found {
+	if found, _ := currencystate.CheckNotExistsState(state.DataStateMerkleRootKey(it.Contract(), it.MerkleRoot()), getStateFunc); found {
 		return e.Wrap(
 			common.ErrStateE.Errorf(
-				"merkleRoot %v in contract account %v",
+				"d-mile data with merkleRoot %v for contract account %v",
 				it.MerkleRoot(), it.Contract()),
+		)
+	}
+
+	if found, _ := currencystate.CheckNotExistsState(state.DataStateTxIDKey(it.Contract(), it.TxID()), getStateFunc); found {
+		return e.Wrap(
+			common.ErrStateE.Errorf(
+				"d-mileage data with txHash %v for contract account %v",
+				it.TxID(), it.Contract()),
 		)
 	}
 
@@ -104,7 +112,11 @@ func (ipp *MigrateDataItemProcessor) Process(
 	}
 
 	sts = append(sts, currencystate.NewStateMergeValue(
-		state.DataStateKey(it.Contract(), it.MerkleRoot()),
+		state.DataStateMerkleRootKey(it.Contract(), it.MerkleRoot()),
+		state.NewDataStateValue(data),
+	))
+	sts = append(sts, currencystate.NewStateMergeValue(
+		state.DataStateTxIDKey(it.Contract(), it.TxID()),
 		state.NewDataStateValue(data),
 	))
 

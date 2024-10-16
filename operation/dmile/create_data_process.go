@@ -119,16 +119,24 @@ func (opp *CreateDataProcessor) PreProcess(
 	if err := state.CheckExistsState(dmilestate.DesignStateKey(fact.Contract()), getStateFunc); err != nil {
 		return nil, mitumbase.NewBaseOperationProcessReasonError(
 			common.ErrMPreProcess.
-				Wrap(common.ErrMServiceNF).Errorf("d mileage service in contract account %v",
+				Wrap(common.ErrMServiceNF).Errorf("d-mile service in contract account %v",
 				fact.Contract(),
 			)), nil
 	}
 
-	if found, _ := state.CheckNotExistsState(dmilestate.DataStateKey(fact.Contract(), fact.MerkleRoot()), getStateFunc); found {
+	if found, _ := state.CheckNotExistsState(dmilestate.DataStateMerkleRootKey(fact.Contract(), fact.MerkleRoot()), getStateFunc); found {
 		return nil, mitumbase.NewBaseOperationProcessReasonError(
 			common.ErrMPreProcess.
-				Wrap(common.ErrMStateE).Errorf("d mileage data for merkleRoot %q in contract account %v",
+				Wrap(common.ErrMStateE).Errorf("d-mile data with merkleRoot %v for contract account %v",
 				fact.MerkleRoot(), fact.Contract(),
+			)), nil
+	}
+
+	if found, _ := state.CheckNotExistsState(dmilestate.DataStateTxIDKey(fact.Contract(), fact.Hash().String()), getStateFunc); found {
+		return nil, mitumbase.NewBaseOperationProcessReasonError(
+			common.ErrMPreProcess.
+				Wrap(common.ErrMStateE).Errorf("d-mileage data with txHash %v for contract account %v",
+				fact.Hash().String(), fact.Contract(),
 			)), nil
 	}
 
@@ -150,13 +158,17 @@ func (opp *CreateDataProcessor) Process( // nolint:dupl
 
 	var sts []mitumbase.StateMergeValue // nolint:prealloc
 	sts = append(sts, state.NewStateMergeValue(
-		dmilestate.DataStateKey(fact.Contract(), fact.MerkleRoot()),
+		dmilestate.DataStateMerkleRootKey(fact.Contract(), fact.MerkleRoot()),
+		dmilestate.NewDataStateValue(data),
+	))
+	sts = append(sts, state.NewStateMergeValue(
+		dmilestate.DataStateTxIDKey(fact.Contract(), fact.Hash().String()),
 		dmilestate.NewDataStateValue(data),
 	))
 
 	currencyPolicy, err := state.ExistsCurrencyPolicy(fact.Currency(), getStateFunc)
 	if err != nil {
-		return nil, mitumbase.NewBaseOperationProcessReasonError("currency not found, %q; %w", fact.Currency(), err), nil
+		return nil, mitumbase.NewBaseOperationProcessReasonError("currency not found, %v; %w", fact.Currency(), err), nil
 	}
 
 	if currencyPolicy.Feeer().Receiver() == nil {
