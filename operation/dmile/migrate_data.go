@@ -66,10 +66,16 @@ func (fact MigrateDataFact) IsValid(b []byte) error {
 			return common.ErrFactInvalid.Wrap(common.ErrSelfTarget.Wrap(errors.Errorf("sender %v is same with contract account", fact.sender)))
 		}
 
-		k := fmt.Sprintf("%s-%s", it.Contract(), it.MerkleRoot())
+		k := fmt.Sprintf("%s-%s-merkleRoot", it.Contract(), it.MerkleRoot())
 
 		if _, found := founds[k]; found {
 			return common.ErrFactInvalid.Wrap(common.ErrDupVal.Wrap(errors.Errorf("merkleRoot %v for contract account %v", it.MerkleRoot(), it.Contract())))
+		}
+
+		k = fmt.Sprintf("%s-%s-txhash", it.Contract(), it.TxID())
+
+		if _, found := founds[k]; found {
+			return common.ErrFactInvalid.Wrap(common.ErrDupVal.Wrap(errors.Errorf("txhash %v for contract account %v", it.TxID(), it.Contract())))
 		}
 
 		founds[k] = struct{}{}
