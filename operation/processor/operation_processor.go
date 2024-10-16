@@ -15,7 +15,7 @@ const (
 	DuplicationTypeSender   currencytypes.DuplicationType = "sender"
 	DuplicationTypeCurrency currencytypes.DuplicationType = "currency"
 	DuplicationTypeContract currencytypes.DuplicationType = "contract"
-	DuplicationTypeMileage  currencytypes.DuplicationType = "mileage"
+	DuplicationTypeDMile    currencytypes.DuplicationType = "dmile"
 )
 
 func CheckDuplication(opr *currencyprocessor.OperationProcessor, op mitumbase.Operation) error {
@@ -24,7 +24,7 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op mitumbase.Op
 
 	var duplicationTypeSenderID string
 	var duplicationTypeCurrencyID string
-	var duplicationTypeMileage string
+	var duplicationTypeDMileData []string
 	var duplicationTypeContractID string
 	var newAddresses []mitumbase.Address
 
@@ -95,9 +95,21 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op mitumbase.Op
 		if !ok {
 			return errors.Errorf("expected %T, not %T", dmile.CreateDataFact{}, t.Fact())
 		}
-		duplicationTypeMileage = currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.MerkleRoot()), DuplicationTypeMileage)
+		duplicationTypeDMileData = []string{currencyprocessor.DuplicationKey(
+			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.MerkleRoot()), DuplicationTypeDMile)}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+	case dmile.MigrateData:
+		fact, ok := t.Fact().(dmile.MigrateDataFact)
+		if !ok {
+			return errors.Errorf("expected %T, not %T", dmile.MigrateDataFact{}, t.Fact())
+		}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+		var datas []string
+		for _, v := range fact.Items() {
+			key := currencyprocessor.DuplicationKey(fmt.Sprintf("%s:%s", v.Contract().String(), v.MerkleRoot()), DuplicationTypeDMile)
+			datas = append(datas, key)
+		}
+		duplicationTypeDMileData = datas
 	default:
 		return nil
 	}
@@ -130,15 +142,17 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op mitumbase.Op
 
 		opr.Duplicated[duplicationTypeContractID] = struct{}{}
 	}
-	if len(duplicationTypeMileage) > 0 {
-		if _, found := opr.Duplicated[duplicationTypeMileage]; found {
-			return errors.Errorf(
-				"cannot use a duplicated contract-mileage for d mileage, %v within a proposal",
-				duplicationTypeMileage,
-			)
-		}
 
-		opr.Duplicated[duplicationTypeMileage] = struct{}{}
+	if len(duplicationTypeDMileData) > 0 {
+		for _, v := range duplicationTypeDMileData {
+			if _, found := opr.Duplicated[v]; found {
+				return errors.Errorf(
+					"cannot use a duplicated contract-merkleroot for d-mile, %v within a proposal",
+					v,
+				)
+			}
+			opr.Duplicated[v] = struct{}{}
+		}
 	}
 
 	if len(newAddresses) > 0 {
@@ -168,7 +182,8 @@ func GetNewProcessor(opr *currencyprocessor.OperationProcessor, op mitumbase.Ope
 		currency.UpdateCurrency,
 		currency.Mint,
 		dmile.RegisterModel,
-		dmile.CreateData:
+		dmile.CreateData,
+		dmile.MigrateData:
 		return nil, false, errors.Errorf("%T needs SetProcessor", t)
 	default:
 		return nil, false, nil
